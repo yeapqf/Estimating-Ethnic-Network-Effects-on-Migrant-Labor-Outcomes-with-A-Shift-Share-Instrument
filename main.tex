@@ -1,0 +1,109 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{natbib}
+\title{Thesis Proposal: Using a Shift-Share Instrument to Estimate Ethnic Networks Effects on Migrant Labor Outcomes}
+\author{Yeap Qian Fang \\ University of Chicago}
+\date{March 2026}
+
+\doublespacing
+\begin{document}
+
+\maketitle
+
+This thesis proposal was submitted as a final paper for the MA in Quantitative Methods class, MAPS 36007 Overview of the Quantitative Methods in the Social and Behavioral Sciences, and is subject to update by the author. This thesis counts towards both the author's undergraduate Economics major and MA degree in Quantitative Methods. 
+
+\section{Introduction}
+Better economic opportunities motivate international migration, despite its challenges such as language and cultural barriers, distance from family etc. for migrants. Considering this, migrant enclaves naturally occur, as migrants take advantage of existing social networks to ease their transition into a new country. Previous research has proven that local ethnic networks lead to increased probability of an immigrant being employed, increased migrant wages and welfare participation (\cite{battisti_dynamic_2022}; \cite{damm_ethnic_2009}; \cite{edin_ethnic_2003}; \cite{bertrand_network_2000}). These studies use neighborhood controls or take advantage of policies simulating a quasi-random experiment placing immigrants into different neighborhoods, which allow for identification of causal neighborhood effects through randomization. However, using only controls produce biased estimates, and the disadvantage of using dispersal policies is that the sample is largely restricted to refugees or asylum seekers. This means that the external validity of these studies are low, as the effect of ethnic networks plausibly differs across different demographic backgrounds. For example, better educated or wealthier migrants could assimilate easier into a new country and depend less on the local ethnic network, when compared to the average refugee or asylum seeker. \\
+
+In this study, I ask if local ethnic networks causally affect immigrant wages, using a representative sample of the migrant population from ACS data. I use a shift-share instrument for causal identification. This approach mitigates the disadvantages of the two approaches of using controls and restrictive dispersal policies by constructing an exogenous instrument and using a comprehensive sample of immigrants.  \\
+
+
+Immigrants are defined here as individuals within the ACS who are foreign nationals, and who migrated to the US in the past 5 years. Individual immigrants' wages are the response variable, while the independent variable is the shift-share instrument.  
+
+\section{Research Design}
+
+\subsection{Why not a Linear Model?}
+We can fit a linear predictor of immigrant wages ethnic composition (with clustered S.E. at the neighborhood level) 
+\begin{equation}
+    Y_{ijkt} =  \alpha \,ethnic_{jkt} + \beta' X_{it} + \beta_0+\epsilon_{ijkt}
+\end{equation}
+where $ethnic$ is the proportion of migrants from origin country/ethnicity $k$ living in the neighborhood $j$ at year $t$, $i$ indexes individual, and $X$ is a vector of controls specific to individual $i$, including education, age, gender, year of immigration, industry etc. We are most interested in the coefficient on ethnic, $\alpha$.\\
+
+This regression would be the most simple model to implement, and it is very easily interpretable. $\alpha$ would just be the correlation between the ethnic composition of a neighborhood and an immigrant's wage after controlling for individual confounders. However, as mentioned in the introduction, the major limitation of this approach is that running a regression of immigrant wages on ethnic composition would produce biased estimates of the true effect of ethnic composition on immigrant labor outcomes, compromising the internal validity of this study. This is because immigrants choose the neighborhoods that they reside in, implying that there is endogeneity in the model arising from simultaneity bias. This means that higher immigrant income in a region attracts more immigrants, which in turn also increases the ethnic composition within that area. When this happens, a change in the outcome variable also causes a change in the regressors, and we are unable to establish a causal effect of ethnic network effects on immigrant labor outcomes. 
+
+\subsection{The Shift-Share Instrument}
+As is common in economics, an instrument that includes exogeneous sources of variation would solve this endogeneity issue. Here, I aim to estimate the effect of ethnic network effects on immigrant labor outcomes using a shift-share instrument. A shift-share instrument is analogous to a measure of exposure to an exogenous shock to the predictor variable. The shift-share instrument uses local, or unit-level, variation in levels of exposure, to estimate the exposure effect of a shock at an aggregated level. My instrument is adapted from Card's (2009) instrument estimating the effect of immigration on wage inequality. \\
+
+The level of spatial analysis used in this study is the Public Use Microdata Area (PUMA), a geographic unit containing around 100,000 people or less, which would allow for network effects to be detected. The local unit here is the PUMA, and the aggregate is at the national level. \\
+
+Conceptually, the instrument is comprised of two terms: the aggregate $shift$ that reflects changes in levels of the predictor variable, and a local-level $share$ that measures the local unit's exposure to a change in level in the predictor variable, typically the proportion of the predictor variable to the aggregate predictor variable. This will become clear as I explain my specific instrument below.\\
+
+The shift-share instrument used in this study is as follows:
+\begin{equation}
+    z_{jkt}=\sum^J_{j=1}s_{jk,t-m}g_{k,t}
+\end{equation}
+
+The share is the fraction of all migrants from country $k$ living in PUMA $j$ in year $t-m$: 
+\begin{equation*}
+    s_{k,t-m}=\frac{\text{Inflow of migrants from origin country k in PUMA j at time $t-m$}}{\text{Total number of migrants from country k in the country at time $t-m$}}
+\end{equation*}
+The share is lagged because we use a historical reference timeframe, such that barring any shocks, the proportion of migrants from country $k$ that migrate to a specific PUMA is constant every year. The share is assumed to be predictive of how many migrants from the same country will move to PUMA $j$ at any point, and so for the current year, the share has to be lagged by a certain amount $m$, which I will vary in the analysis to check for robustness and how long is expected for the shock to take effect. Lagging the share component also has the advantage of reflecting local network effects: if the share component decreases in year $t-m, m<t$, then it would indicate that there is less network effects at play that are attracting migrants from country $k$ to PUMA $j$.  Migrants in PUMA $j$ from country $k$ is hereafter shortened as migrants$_{jk})$.\\
+
+The shift, $g_{k,t}$, is defined as the inflow of migrants from country $k$ in year $t$ at the national level. The shift component would be exogenous if the national migration rate from country $k$ is independent of local conditions in any PUMA $j$ that affect local wages (Card, 2009). This is probably true intuitively, it is not very likely that there are confounders of wages in PUMAs that are related to migration push factors in origin country $k$.  \\
+
+The instrument is summed up over the local shift and the aggregate share, and altogether, it is a theoretical prediction of the population of migrants from country $k$ 
+that is only shifted by exogenous changes in migration levels from country $k$ to the U.S., assuming a constant proportion of total migrants to the US from $k$ arriving in $j$.  For example, if the number of migrants from $k$ to the U.S. does not change in two different time periods, then we would expect that the fraction of these migrants that choose to migrate to local PUMA $j$ is constant across both time periods, absent of shocks. 
+
+
+
+\subsubsection{Evaluating the Shift-share Instrument}
+In order for this instrument to identify a causal effect, it has to be exogenous (through the exogeneity of the shift, but the share does not have to be exogenous), relevant and satisfy the exclusion restriction. The instrument is relevant (has an impact on local network effects) as the historical proportion of migrants$_{jk}$ should be correlated with the observed current proportion of migrants$_{jk}$. This is because areas with a high ethnic concentration tends to attract more migrants from that specific ethnic background, and we can generally use current country-specific migrant population in a city to predict the same migrant population future, which is what we exploit to construct this instrument. \\
+
+Intuitively, the shift-share instrument would also satisfy the exclusion restriction by construction. We rule out direct changes in income in any PUMA, because the national migrant$_{jk}$ inflow is exogenous and also because observed wages are not correlated with theoretically pre-determined migrant shares. So immigrant wages should not be directly affected by a theoretical prediction of the migration$_{jk}$ based on historical migration patterns and aggregate migration shocks.
+
+\subsection{IV Model}
+
+Now that we understand the construction and validity of the shift-share instrument, the IV model is as follows:
+\begin{align*}
+    Y_{ijkt}&=\alpha \,ethnic_{jkt} + \beta'X_{it}+\beta_0+\epsilon_{ijkt}\\
+    ethnic_{jkt}&=\gamma \, z_{jkt} +\gamma_0 +  u_{jkt}
+\end{align*}
+where $Cov(\epsilon_{ijkt}, z_{jkt})=0$.  
+
+
+\subsection{Data}
+My main source of data will be the American Community Survey (ACS). I restrict the sample of origin countries to be countries with the 10 highest average migration rates to the U.S. For the outcome variable (wages) and individual-level controls, I use individual-level microdata from the ACS, restricting the sample to those who are foreign nationals and who arrived in the US 5 years, or less, ago so that we can check for network effects on new migrants, who are most likely to take advantage of local networks to seek economic opportunity. To construct the shift component of the instrument, I use national-level data from ACS to identify migrant inflow from each country $k$ in year $t$. To construct the share component, I source the inflow of new migrants from $k$ at year $t-m$ from aggregated PUMA-level ACS data. This would allow me to run static, cross-sectional 2SLS regressions across data from different years, tentatively 2014-2019 (pre-COVID, because the observed new migrant share might not have a high correlation with predicted inflow, violating the relevance condition required under IV).
+
+\subsection{Limitations: Considerations of Validity}
+\subsubsection{Construct Validity}
+
+The goal of the study is to measure ethnic network effects on immigrant labor outcomes. Wages are a standard approach to evaluate labor outcomes, and is generally the goal of seeking economic opportunity, so wages do have construct validity. On the other hand, this paper uses the shift-share instrument to instrument for the amount of country-specific migrants in a PUMA. The construct validity here is less convincing, as 
+
+\subsubsection{Internal Validity}
+Results would be internally valid if the shift-share instrument is truly exogenous, relevant and satisfy the exclusion restriction. These are untestable and are strong assumptions to make, so the internal validity is not entirely convincing on its own.  Results are also internally valid conditional upon the ACS data being accurate, but given that the ACS has a large sample size and is widely used, I believe that the data would produce sufficiently consistent and reliable estimates. I can improve on both data and methodological internal validity simultaneously by conducting robustness checks, such as by using a different set of data (eg. from the census) and checking if they yield the same results.
+
+\subsubsection{External Validity}
+
+A goal of this study was to contribute externally valid results that other papers utilizing quasi-experimental situations could not generalize to. If results are internally valid, I believe that they would also be externally valid, as the ACS data is representative of the immigrant population, and there is no context-specific immigration factors or other issues affecting wages only in this context. 
+
+
+\section{An Alternative Approach: Mixed Effects IV}
+Above, we considered a linear model and its limitations in identifying a one-way causal effect of ethnic concentration on immigrant wages. Here, I propose an alternative mixed effects model that also incorporates IV. 
+
+\subsection{Mixed Effects IV Model}
+This model makes sense as individual immigrants are nested within levels (origin country and PUMA). I do not allow for variation across origin country as it would not make sense to expect one's origin country to affect one's wages, independent of one's talent and capabilities, origin country as a level is included only to check for ethnic network effects. However, I use a random intercept model for migrant wages in different PUMAs. This is intuitive as wages differ widely geographically, and shifting wages vertically by setting a different baseline for each PUMA to account for different living costs could potentially improve the model by correcting for overconfident standard errors. \\The mixed effects IV model with a random intercept:
+
+\begin{align*}
+    Y_{ijkt}&=\alpha \,ethnic_{jkt} + \beta'X_{it}+\beta_{0j}+\epsilon_{ijkt}\\
+    ethnic_{jkt}&=\gamma \, z_{jkt} + \gamma_0 + u_{jkt}\\ 
+    \beta_{0j} &\sim N(0, \sigma^2)
+\end{align*}
+where $Cov(\epsilon_{ijkt}, z_{jkt})=0$. This is the same model as in the IV, but the intercept of migrant wages $Y_{ijkt}$ is allowed to vary across PUMAs. Other parameters are fixed. 
+
+
+
+ \bibliographystyle{apalike} 
+ \bibliography{thesis_proposal}
+\end{document}
